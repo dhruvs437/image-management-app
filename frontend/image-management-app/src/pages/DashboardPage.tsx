@@ -1,85 +1,55 @@
 // src/pages/DashboardPage.tsx
 
 import React, { useState } from 'react';
-import { registerUser, loginUser } from '../services/api';
 import Navbar from '../components/layout/Navbar';
 import ImageList from '../components/image/ImageList';
 import ImageUpload from '../components/image/ImageUpload';
-import useFetchImages from '../hooks/useFetchImages';
-import './DashboardPage.css'; // CSS file for styles
+import AuthForm from '../components/auth/AuthForm';
+import {useFetchImages} from '../hooks/useFetchImages';
+import './DashboardPage.css'; // Add your styles here
 
 const DashboardPage: React.FC = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [token, setToken] = useState('');
-  const [isLogin, setIsLogin] = useState(true);
-  const { images, loading, error } = useFetchImages(token);
+  const [activeTab, setActiveTab] = useState<'upload' | 'fetch' | null>(null);
+  const { images, loading, error, fetchImages } = useFetchImages(token); // Include fetchImages
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await registerUser(username, password);
-      alert('User registered successfully!');
-      setIsLogin(true); // Switch to login form after registration
-    } catch (error) {
-      alert('Registration failed.');
+  const BUCKET_NAME = 'img-store-container'; // Replace with your actual bucket name
+  const BASE_URL = `https://${BUCKET_NAME}.s3.amazonaws.com/`; // Construct base URL for S3
+
+  const handleTabClick = (tab: 'upload' | 'fetch') => {
+    setActiveTab(tab);
+    if (tab === 'fetch') {
+      fetchImages(); // Fetch images when fetch tab is clicked
     }
-  };
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const response = await loginUser(username, password);
-      setToken(response.data.token);
-      alert('Login successful!');
-    } catch (error) {
-      alert('Login failed.');
-    }
-  };
-
-  const toggleForm = () => {
-    setIsLogin(!isLogin);
   };
 
   return (
     <div className="dashboard">
       <Navbar />
-      <div className="form-container">
-        <h2>{isLogin ? 'Login' : 'Register'}</h2>
-        <form onSubmit={isLogin ? handleLogin : handleRegister}>
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
-        </form>
-        <p>
-          {isLogin ? 'Need an account? ' : 'Already have an account? '}
-          <button onClick={toggleForm}>
-            {isLogin ? 'Register' : 'Login'}
-          </button>
-        </p>
-      </div>
 
-      {token && (
+      {!token ? (
+        <AuthForm onLoginSuccess={(token) => setToken(token)} />
+      ) : (
         <>
-          <ImageUpload token={token} onImageUploaded={() => {}} />
-          {loading ? (
-            <p>Loading images...</p>
-          ) : error ? (
-            <p>{error}</p>
-          ) : (
-            <ImageList images={images} />
+          <div className="tab-buttons">
+            <button onClick={() => handleTabClick('upload')}>Upload Image</button>
+            <button onClick={() => handleTabClick('fetch')}>Fetch Images</button>
+          </div>
+
+          {activeTab === 'upload' && (
+            <ImageUpload token={token} onImageUploaded={fetchImages} />
+          )}
+          
+          {activeTab === 'fetch' && (
+            <>
+              {loading ? (
+                <p>Loading images...</p>
+              ) : error ? (
+                <p>{error}</p>
+              ) : (
+                <ImageList images={images?.map(image => `${BASE_URL}${image}`)} /> // Pass full URLs to ImageList
+              )}
+            </>
           )}
         </>
       )}

@@ -25,7 +25,8 @@ export const uploadImage = async (file: File, token: string) => {
 };
 
 export const fetchImages = async (token: string) => {
-  return await api.get('/images', {
-    headers: { 'Authorization': `Bearer ${token}` },
-  });
-};
+    const response = await axios.get('/images', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response;
+  };

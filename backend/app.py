@@ -125,12 +125,14 @@ def upload_image(current_user):
         print(f"An error occurred: {e}")
         return jsonify({'error': 'Upload failed', 'message': str(e)}), 500
 
-# Fetch images
 @app.route('/images', methods=['GET'])
 @token_required
 def get_images(current_user):
+    print("Fetching images for user:", current_user.id)  # Add this line
     images = Image.query.filter_by(user_id=current_user.id).all()  # Fetch only user's images
-    return jsonify({'images': [image.filename for image in images]})
+    print(images, "check")  # Ensure this line is reached
+    image_urls = [f"https://{BUCKET_NAME}.s3.amazonaws.com/{image.filename}" for image in images]
+    return jsonify({'images': image_urls})
 
 if __name__ == '__main__':
     app.run(port=8000)
