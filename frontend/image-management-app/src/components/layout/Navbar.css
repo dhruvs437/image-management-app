@@ -1,0 +1,13 @@
+/* src/components/layout/Navbar.css */
+
+.navbar {
+    background: #007bff;
+    color: white;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .navbar h1 {
+    margin: 0;
+  }
+  
