@@ -4,34 +4,36 @@ This is an image management application that allows users to upload and manage i
 
 ## Prerequisites
 
-- Node.js and npm installed
-- Python 3.x installed
-- Virtual environment tool (like `venv`)
-- AWS account with S3 access
+Before you begin, ensure you have met the following requirements:
+
+- **Node.js** and **npm** installed
+- **Python 3.x** installed
+- A virtual environment tool (like `venv`)
+- An **AWS account** with S3 access
 
 ## Getting Started
 
-Follow the steps below to run the frontend and backend of the application.
+Follow the steps below to run both the frontend and backend of the application.
 
 ### 1. Run the Frontend
 
-Navigate to the frontend directory and start the development server.
-
-```bash
-cd frontend/image-management-app
-npm install
-npm run dev
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend/image-management-app
+   npm install
+   npm run dev
+the frontend will typically run on http://localhost:3000.
 
 ### 2. Run the Backend
 
-Navigate to the backend directory and start the development server.
-```bash
-cd backend
+1. Navigate to the backend directory:
 
-# On macOS and Linux:
-source venv/bin/activate
+    cd backend
+    python3 -m venv venv
+    source venv/bin/activate
+    python3 app.py
 
-# On Windows:
-venv\Scripts\activate
+The backend will typically run on http://localhost:8000.
 
-python3 app.py
+
+
