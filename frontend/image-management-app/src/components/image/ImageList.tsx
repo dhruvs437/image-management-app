@@ -2,8 +2,13 @@
 
 import React from 'react';
 
+interface Image {
+  url: string;
+  uploadDate: string; // Assuming uploadDate is in ISO format
+}
+
 interface ImageListProps {
-  images: string[];
+  images: Image[];
 }
 
 const ImageList: React.FC<ImageListProps> = ({ images }) => {
@@ -12,11 +17,16 @@ const ImageList: React.FC<ImageListProps> = ({ images }) => {
       <h2>Your Images</h2>
       <div className="images">
         {images.map((image, index) => (
-          <img 
-            key={index} 
-            src={image} // Use the image URL directly
-            alt={`Image ${index + 1}`} // Improve alt text for accessibility
-          />
+          <div className="image-card" key={index}>
+            <img 
+              src={image.url}
+              alt={`Image ${index + 1}`} // Improve alt text for accessibility
+              className="image"
+            />
+            <div className="image-details">
+              <p className="upload-date">Uploaded-:{new Date(image.uploadDate).toLocaleDateString()}</p>
+            </div>
+          </div>
         ))}
       </div>
     </div>

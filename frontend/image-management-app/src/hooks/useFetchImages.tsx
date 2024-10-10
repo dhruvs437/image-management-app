@@ -1,29 +1,30 @@
-// src/hooks/useFetchImages.tsx
+// src/hooks/useFetchImages.ts
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 export const useFetchImages = (token: string) => {
-  const [images, setImages] = useState<string[]>([]); // Initialize as an empty array
-  const [loading, setLoading] = useState<boolean>(false);
+  const [images, setImages] = useState<{ url: string; uploadDate: string }[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchImages = async () => {
-    if (!token) return; 
     setLoading(true);
     setError(null);
-    
     try {
-      const response = await axios.get('http://localhost:8000/images', { 
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-      console.log(response,"res")
-      setImages(response.data.images); // Set images to the data received
+      const response = await axios.get('http://localhost:8000/images', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response,"1")
+      const fetchedImages = response.data.images.map((img: { url: string; uploadDate: string }) => ({
+        url: img.url,
+        uploadDate: img.uploadDate,
+      }));
+      setImages(fetchedImages);
     } catch (err) {
-      setError('Failed to fetch images.');
-      console.error(err);
+      setError('Failed to fetch images');
     } finally {
       setLoading(false);
     }
@@ -31,9 +32,9 @@ export const useFetchImages = (token: string) => {
 
   useEffect(() => {
     if (token) {
-      fetchImages(); // Fetch images when the token changes
+      fetchImages();
     }
   }, [token]);
+
   return { images, loading, error, fetchImages };
 };
-

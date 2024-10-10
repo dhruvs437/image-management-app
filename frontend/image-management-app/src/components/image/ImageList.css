@@ -1,0 +1,39 @@
+/* src/components/image/ImageList.css */
+
+.image-gallery {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  .images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Add some space between cards */
+  }
+  
+  .image-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: calc(33.333% - 20px); /* 3 cards in a row */
+    position: relative;
+  }
+  
+  .image-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  .image-details {
+    padding: 10px;
+  }
+  
+  .upload-date {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
+  }
+  

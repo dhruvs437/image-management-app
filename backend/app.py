@@ -143,13 +143,19 @@ def upload_image(current_user):
         print(f"An error occurred: {e}")
         return jsonify({'error': 'Upload failed', 'message': str(e)}), 500
 
-# Fetch user's images
+# Fetch user's images with upload dates
 @app.route('/images', methods=['GET'])
 @token_required
 def get_images(current_user):
     images = Image.query.filter_by(user_id=current_user.id).all()
-    image_urls = [f"https://{BUCKET_NAME}.s3.amazonaws.com/{image.filename}" for image in images]
-    return jsonify({'images': image_urls})
+    image_data = [
+        {
+            'url': f"https://{BUCKET_NAME}.s3.amazonaws.com/{image.filename}",
+            'uploadDate': image.upload_time.isoformat()  # Convert to ISO format for easy parsing
+        }
+        for image in images
+    ]
+    return jsonify({'images': image_data})
 
 if __name__ == '__main__':
     app.run(port=8000)
