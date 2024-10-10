@@ -1,8 +1,8 @@
 // src/components/image/ImageList.tsx
 
 import React, { useState } from 'react';
-import './ImageList.css'; // Import CSS for styles
-import { analyzeImageWithChatGPT } from '../../services/chatGptApi'; // Import the API function
+import './ImageList.css'; 
+import { analyzeImageWithChatGPT } from '../../services/chatGptApi'; 
 
 interface Image {
   url: string;
@@ -38,8 +38,10 @@ const ImageCard: React.FC<{ image: Image }> = ({ image }) => {
 
     try {
       const result = await analyzeImageWithChatGPT(image.url);
+      console.log(result,"check");
       setDescription(result);
     } catch (err) {
+      console.log(err,"err")
       setError('Failed to generate description. Please try again.');
     } finally {
       setLoading(false);
