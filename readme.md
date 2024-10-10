@@ -27,7 +27,7 @@ the frontend will typically run on http://localhost:3000.
 ### 2. Run the Backend
 
 1. Navigate to the backend directory:
-
+    ```bash
     cd backend
     python3 -m venv venv
     source venv/bin/activate
