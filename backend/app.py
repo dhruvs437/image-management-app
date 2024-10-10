@@ -1,23 +1,23 @@
-# backend/app.py
+# app.py
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
-import os
 from werkzeug.utils import secure_filename
-import boto3
-from botocore.exceptions import NoCredentialsError
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import text
+import boto3
 import jwt
 from functools import wraps
+from datetime import datetime
+from botocore.exceptions import NoCredentialsError
+from models import db, User, Image  # Models are imported here
 from config import Config
-from models import db, User, Image
-from sqlalchemy import text  # Import text for raw SQL queries
+from mimetypes import guess_type
 
 app = Flask(__name__)
 app.config.from_object(Config)
 CORS(app)
+
 db.init_app(app)
 
 # Create all database tables
@@ -51,7 +51,6 @@ def health_check():
 @app.route('/s3-check', methods=['GET'])
 def s3_check():
     try:
-        # Check if you can list the bucket contents
         response = s3.list_objects_v2(Bucket=BUCKET_NAME)
         if 'Contents' in response:
             return jsonify({'status': 'S3 connected', 'message': f'Bucket contains {len(response["Contents"])} objects'}), 200
@@ -81,8 +80,6 @@ def token_required(f):
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-    print(f"Received registration data: {data}")
-    # Use 'pbkdf2:sha256' as the hash method
     hashed_password = generate_password_hash(data['password'], method='pbkdf2:sha256')
     new_user = User(username=data['username'], password_hash=hashed_password)
     db.session.add(new_user)
@@ -101,7 +98,7 @@ def login():
     
     return jsonify({'message': 'Invalid username or password'}), 401
 
-# Upload image to S3
+# Upload image to S3 and return public URL
 @app.route('/upload', methods=['POST'])
 @token_required
 def upload_image(current_user):
@@ -112,25 +109,45 @@ def upload_image(current_user):
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
 
+    # Get a secure version of the filename
     filename = secure_filename(file.filename)
+
+    # Guess the content type based on the filename
+    content_type, _ = guess_type(filename)
+    if not content_type:
+        content_type = 'binary/octet-stream'  # Default content type if guessing fails
+
     try:
-        s3.upload_fileobj(file, BUCKET_NAME, filename)
-        new_image = Image(filename=filename, upload_time=datetime.now(), user_id=current_user.id)  # Use actual user ID
+        # Upload the file to S3 with the correct content type and public-read ACL
+        s3.upload_fileobj(
+            file,
+            BUCKET_NAME,
+            filename,
+            ExtraArgs={
+                'ContentType': content_type  # Ensure correct Content-Type is set
+            }
+        )
+
+        # Store the image in the database
+        new_image = Image(filename=filename, upload_time=datetime.now(), user_id=current_user.id)
         db.session.add(new_image)
         db.session.commit()
-        return jsonify({'message': 'Image uploaded successfully'}), 200
+
+        # Construct the public URL for the uploaded image
+        image_url = f"https://{BUCKET_NAME}.s3.amazonaws.com/{filename}"
+
+        return jsonify({'message': 'Image uploaded successfully', 'url': image_url}), 200
     except NoCredentialsError:
         return jsonify({'error': 'Credentials not available'}), 500
     except Exception as e:
         print(f"An error occurred: {e}")
         return jsonify({'error': 'Upload failed', 'message': str(e)}), 500
 
+# Fetch user's images
 @app.route('/images', methods=['GET'])
 @token_required
 def get_images(current_user):
-    print("Fetching images for user:", current_user.id)  # Add this line
-    images = Image.query.filter_by(user_id=current_user.id).all()  # Fetch only user's images
-    print(images, "check")  # Ensure this line is reached
+    images = Image.query.filter_by(user_id=current_user.id).all()
     image_urls = [f"https://{BUCKET_NAME}.s3.amazonaws.com/{image.filename}" for image in images]
     return jsonify({'images': image_urls})
 

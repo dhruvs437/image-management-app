@@ -9,17 +9,12 @@ export const useFetchImages = (token: string) => {
   const [error, setError] = useState<string | null>(null);
 
   const fetchImages = async () => {
-    if (!token) return; // Return early if no token is provided
+    if (!token) return; 
     setLoading(true);
     setError(null);
     
     try {
-      // const response = await axios.get('/images', {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //   },
-      // });
-      const response = await axios.get('http://localhost:8000/images', { // Adjust the URL
+      const response = await axios.get('http://localhost:8000/images', { 
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -39,7 +34,6 @@ export const useFetchImages = (token: string) => {
       fetchImages(); // Fetch images when the token changes
     }
   }, [token]);
-  console.log(images)
   return { images, loading, error, fetchImages };
 };
 

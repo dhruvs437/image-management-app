@@ -13,8 +13,6 @@ const DashboardPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'upload' | 'fetch' | null>(null);
   const { images, loading, error, fetchImages } = useFetchImages(token); // Include fetchImages
 
-  const BUCKET_NAME = 'img-store-container'; // Replace with your actual bucket name
-  const BASE_URL = `https://${BUCKET_NAME}.s3.amazonaws.com/`; // Construct base URL for S3
 
   const handleTabClick = (tab: 'upload' | 'fetch') => {
     setActiveTab(tab);
@@ -47,7 +45,7 @@ const DashboardPage: React.FC = () => {
               ) : error ? (
                 <p>{error}</p>
               ) : (
-                <ImageList images={images?.map(image => `${BASE_URL}${image}`)} /> // Pass full URLs to ImageList
+                <ImageList images={images} /> // Pass full URLs to ImageList
               )}
             </>
           )}
