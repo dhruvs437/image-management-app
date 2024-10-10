@@ -22,7 +22,10 @@ cd frontend/image-management-app
 npm install
 npm run dev
 
-### Backend
+### 2. Run the Backend
+
+Navigate to the backend directory and start the development server.
+```bash
 cd backend
 
 # On macOS and Linux:
