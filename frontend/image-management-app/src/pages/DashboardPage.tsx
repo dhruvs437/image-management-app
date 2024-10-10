@@ -1,6 +1,4 @@
-// src/pages/DashboardPage.tsx
-
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../components/layout/Navbar';
 import ImageList from '../components/image/ImageList';
 import ImageUpload from '../components/image/ImageUpload';
@@ -9,9 +7,20 @@ import { useFetchImages } from '../hooks/useFetchImages';
 import './DashboardPage.css';
 
 const DashboardPage: React.FC = () => {
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [activeTab, setActiveTab] = useState<'upload' | 'fetch' | null>(null);
-  const { images, loading, error, fetchImages } = useFetchImages(token);
+  
+  // Ensure token is either a string or empty string
+  const { images, loading, error, fetchImages } = useFetchImages(token || '');
+
+  // Update token and local storage whenever token changes
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem('token', token);
+    } else {
+      localStorage.removeItem('token');
+    }
+  }, [token]);
 
   const handleTabClick = (tab: 'upload' | 'fetch') => {
     setActiveTab(tab);
@@ -20,14 +29,18 @@ const DashboardPage: React.FC = () => {
     }
   };
 
+  const handleLogout = () => {
+    setToken(null); // Clear token in state
+  };
+
   return (
     <div className="dashboard">
       <Navbar />
-
       {!token ? (
         <AuthForm onLoginSuccess={setToken} />
       ) : (
         <>
+          <button onClick={handleLogout}>Logout</button> {/* Logout button */}
           <div className="tab-buttons">
             <button onClick={() => handleTabClick('upload')}>Upload Image</button>
             <button onClick={() => handleTabClick('fetch')}>Fetch Images</button>

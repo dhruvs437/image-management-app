@@ -46,6 +46,9 @@
   .success {
     color: green; /* Success message color */
   }
+  .upload-container-text{
+    color:black
+  }
   
   .error {
     color: red; /* Error message color */

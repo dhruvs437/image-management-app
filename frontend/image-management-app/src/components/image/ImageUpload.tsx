@@ -45,7 +45,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ token, onImageUploaded }) => 
 
   return (
     <div className="upload-container">
-      <h2>Upload Image</h2>
+      <h2 className='upload-container-text'>Upload Image</h2>
       <form onSubmit={handleUpload}>
         <input
           type="file"
