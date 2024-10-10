@@ -1,7 +1,6 @@
 // src/pages/UploadPage.tsx
 
 import Navbar from '../components/layout/Navbar';
-// import './UploadPage.css'; // Add specific styles for the Upload Page
 
 const UploadPage = () => {
   return (

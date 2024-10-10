@@ -10,7 +10,6 @@ const DashboardPage: React.FC = () => {
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [activeTab, setActiveTab] = useState<'upload' | 'fetch' | null>(null);
   
-  // Ensure token is either a string or empty string
   const { images, loading, error, fetchImages } = useFetchImages(token || '');
 
   // Update token and local storage whenever token changes

@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-const OPENAI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY; // Use the environment variable
+const OPENAI_API_KEY = import.meta.env.REACT_APP_OPENAI_API_KEY; 
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
 export const analyzeImageWithChatGPT = async (imageUrl: string): Promise<string> => {
@@ -10,7 +10,7 @@ export const analyzeImageWithChatGPT = async (imageUrl: string): Promise<string>
     const response = await axios.post(
       OPENAI_API_URL,
       {
-        model: "gpt-3.5-turbo", // or any other model you want to use
+        model: "gpt-3.5-turbo", 
         messages: [
           {
             role: "user",
@@ -26,7 +26,7 @@ export const analyzeImageWithChatGPT = async (imageUrl: string): Promise<string>
       }
     );
 
-    return response.data.choices[0].message.content; // Extract the AI-generated description
+    return response.data.choices[0].message.content; 
   } catch (error) {
     console.error('Error analyzing image:', error);
     throw new Error('Failed to analyze image');
