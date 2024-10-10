@@ -5,19 +5,18 @@ import Navbar from '../components/layout/Navbar';
 import ImageList from '../components/image/ImageList';
 import ImageUpload from '../components/image/ImageUpload';
 import AuthForm from '../components/auth/AuthForm';
-import {useFetchImages} from '../hooks/useFetchImages';
-import './DashboardPage.css'; // Add your styles here
+import { useFetchImages } from '../hooks/useFetchImages';
+import './DashboardPage.css';
 
 const DashboardPage: React.FC = () => {
   const [token, setToken] = useState('');
   const [activeTab, setActiveTab] = useState<'upload' | 'fetch' | null>(null);
-  const { images, loading, error, fetchImages } = useFetchImages(token); // Include fetchImages
-
+  const { images, loading, error, fetchImages } = useFetchImages(token);
 
   const handleTabClick = (tab: 'upload' | 'fetch') => {
     setActiveTab(tab);
     if (tab === 'fetch') {
-      fetchImages(); // Fetch images when fetch tab is clicked
+      fetchImages();
     }
   };
 
@@ -26,7 +25,7 @@ const DashboardPage: React.FC = () => {
       <Navbar />
 
       {!token ? (
-        <AuthForm onLoginSuccess={(token) => setToken(token)} />
+        <AuthForm onLoginSuccess={setToken} />
       ) : (
         <>
           <div className="tab-buttons">
@@ -37,7 +36,7 @@ const DashboardPage: React.FC = () => {
           {activeTab === 'upload' && (
             <ImageUpload token={token} onImageUploaded={fetchImages} />
           )}
-          
+
           {activeTab === 'fetch' && (
             <>
               {loading ? (
@@ -45,7 +44,7 @@ const DashboardPage: React.FC = () => {
               ) : error ? (
                 <p>{error}</p>
               ) : (
-                <ImageList images={images} /> // Pass full URLs to ImageList
+                <ImageList images={images} />
               )}
             </>
           )}

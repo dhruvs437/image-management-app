@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { registerUser, loginUser } from '../../services/api';
+// import './AuthForm.css'; // Import CSS for styles
 
 interface AuthFormProps {
   onLoginSuccess: (token: string) => void;
@@ -11,15 +12,16 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await registerUser(username, password);
       alert('User registered successfully!');
-      setIsLogin(true); // Switch to login form after registration
-    } catch (error) {
-      alert('Registration failed.');
+      setIsLogin(true);
+    } catch {
+      setErrorMessage('Registration failed.');
     }
   };
 
@@ -29,18 +31,20 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLoginSuccess }) => {
       const response = await loginUser(username, password);
       onLoginSuccess(response.data.token);
       alert('Login successful!');
-    } catch (error) {
-      alert('Login failed.');
+    } catch {
+      setErrorMessage('Login failed.');
     }
   };
 
   const toggleForm = () => {
+    setErrorMessage(null); // Clear error message on toggle
     setIsLogin(!isLogin);
   };
 
   return (
     <div className="auth-form">
       <h2>{isLogin ? 'Login' : 'Register'}</h2>
+      {errorMessage && <p className="error">{errorMessage}</p>}
       <form onSubmit={isLogin ? handleLogin : handleRegister}>
         <input
           type="text"

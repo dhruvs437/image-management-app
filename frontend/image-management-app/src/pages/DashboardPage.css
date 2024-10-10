@@ -1,49 +1,12 @@
-/* src/pages/DashboardPage.css */
 .dashboard {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .auth-form, .tab-buttons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .auth-form input {
-    margin: 5px 0;
-    padding: 10px;
-    width: 100%;
-  }
-  
-  .auth-form button, .tab-buttons button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .auth-form button:hover, .tab-buttons button:hover {
-    background-color: #45a049;
-  }
-  
-  .tab-buttons {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .tab-buttons button {
-    padding: 10px 15px;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-  
-  .upload-container {
-    margin-top: 20px;
-  }
-  
+  padding: 20px;
+}
+
+.tab-buttons {
+  margin: 20px 0;
+}
+
+.tab-buttons button {
+  margin-right: 10px;
+  padding: 10px 15px;
+}

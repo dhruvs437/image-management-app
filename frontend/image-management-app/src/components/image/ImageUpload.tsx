@@ -1,5 +1,8 @@
+// src/components/image/ImageUpload.tsx
+
 import React, { useState } from 'react';
 import { uploadImage } from '../../services/api';
+import './ImageUpload.css'; // Import CSS for styles
 
 interface ImageUploadProps {
   token: string;
@@ -8,8 +11,8 @@ interface ImageUploadProps {
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ token, onImageUploaded }) => {
   const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState<boolean>(false); // New loading state
-  const [message, setMessage] = useState<string | null>(null); // Message for success or failure
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [message, setMessage] = useState<string | null>(null);
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,18 +21,25 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ token, onImageUploaded }) => 
       return;
     }
 
-    setUploading(true); // Start loading state
-    setMessage(null); // Clear previous message
+    setUploading(true);
+    setMessage(null);
 
     try {
       await uploadImage(file, token);
       setMessage('Image uploaded successfully!');
-      setFile(null); // Clear the file input
-      onImageUploaded(); // Refresh image list after upload
-    } catch (error) {
+      setFile(null);
+      onImageUploaded();
+    } catch {
       setMessage('Upload failed. Please try again.');
     } finally {
-      setUploading(false); // Stop loading state
+      setUploading(false);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files ? e.target.files[0] : null;
+    if (selectedFile) {
+      setFile(selectedFile);
     }
   };
 
@@ -39,7 +49,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ token, onImageUploaded }) => 
       <form onSubmit={handleUpload}>
         <input
           type="file"
-          onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
+          accept="image/*" // Restrict file selection to images
+          onChange={handleFileChange}
           required
         />
         <button type="submit" disabled={uploading}>
@@ -47,9 +58,20 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ token, onImageUploaded }) => 
         </button>
       </form>
 
+      {/* Display the selected file name */}
+      {file && (
+        <div className="file-preview">
+          <h3>Selected File:</h3>
+          <p>{file.name}</p>
+          <img
+            src={URL.createObjectURL(file)} // Create a URL for the selected file
+            alt="Preview"
+            className="image-preview"
+          />
+        </div>
+      )}
+
       {message && <p className={`message ${message.includes('failed') ? 'error' : 'success'}`}>{message}</p>}
-      
-      {/* You can optionally add a spinner during upload */}
       {uploading && <div className="spinner">Uploading...</div>}
     </div>
   );

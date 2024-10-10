@@ -1,0 +1,58 @@
+/* src/components/image/ImageUpload.css */
+
+.upload-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9; /* Light background for better visibility */
+  }
+  
+  input[type="file"] {
+    margin-bottom: 10px;
+  }
+  
+  button {
+    padding: 10px 15px;
+    background-color: #007bff; /* Primary color */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:disabled {
+    background-color: #ccc; /* Disabled button style */
+  }
+  
+  .file-preview {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .image-preview {
+    max-width: 100%;
+    max-height: 250px; /* Limit preview height */
+    object-fit: cover;  /* Maintain aspect ratio */
+    margin-top: 10px; /* Space between file name and image */
+  }
+  
+  .message {
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  
+  .success {
+    color: green; /* Success message color */
+  }
+  
+  .error {
+    color: red; /* Error message color */
+  }
+  
+  .spinner {
+    margin-top: 10px;
+    font-size: 14px; /* Spinner text size */
+  }
+  
