@@ -6,7 +6,7 @@
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #f9f9f9; /* Light background for better visibility */
+    background-color: #f9f9f9; 
   }
   
   input[type="file"] {
@@ -15,7 +15,7 @@
   
   button {
     padding: 10px 15px;
-    background-color: #007bff; /* Primary color */
+    background-color: #007bff; 
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -44,18 +44,18 @@
   }
   
   .success {
-    color: green; /* Success message color */
+    color: green; 
   }
   .upload-container-text{
     color:black
   }
   
   .error {
-    color: red; /* Error message color */
+    color: red; 
   }
   
   .spinner {
     margin-top: 10px;
-    font-size: 14px; /* Spinner text size */
+    font-size: 14px; 
   }
   

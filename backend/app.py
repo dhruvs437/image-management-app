@@ -10,7 +10,7 @@ import jwt
 from functools import wraps
 from datetime import datetime
 from botocore.exceptions import NoCredentialsError
-from models import db, User, Image  # Models are imported here
+from models import db, User, Image  
 from config import Config
 from mimetypes import guess_type
 
@@ -24,12 +24,12 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
     try:
-        db.session.execute(text('SELECT 1'))  # Check database connection with text()
+        db.session.execute(text('SELECT 1'))  
         print("Database connected successfully!")
     except Exception as e:
         print(f"Database connection failed: {e}")
 
-# Configure S3 for file storage
+
 s3 = boto3.client(
     's3',
     aws_access_key_id=Config.AWS_ACCESS_KEY_ID,
@@ -112,13 +112,11 @@ def upload_image(current_user):
     # Get a secure version of the filename
     filename = secure_filename(file.filename)
 
-    # Guess the content type based on the filename
     content_type, _ = guess_type(filename)
     if not content_type:
-        content_type = 'binary/octet-stream'  # Default content type if guessing fails
+        content_type = 'binary/octet-stream'  
 
     try:
-        # Upload the file to S3 with the correct content type and public-read ACL
         s3.upload_fileobj(
             file,
             BUCKET_NAME,

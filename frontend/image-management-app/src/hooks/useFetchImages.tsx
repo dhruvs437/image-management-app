@@ -17,7 +17,6 @@ export const useFetchImages = (token: string) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response,"1")
       const fetchedImages = response.data.images.map((img: { url: string; uploadDate: string }) => ({
         url: img.url,
         uploadDate: img.uploadDate,
